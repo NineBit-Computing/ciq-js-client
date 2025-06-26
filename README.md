@@ -1,4 +1,4 @@
-# 🔗 ciq-js-client
+# 🔗 @ninebit/ciq
 
 **Official Node.js SDK for interacting with [NineBit CIQ](https://ciq.ninebit.in)** — a secure, enterprise-grade orchestration platform for AI/ML workflows and rapid prototyping with your data.
 
@@ -20,13 +20,13 @@
 ## 📦 Installation
 
 ```bash
-npm install ninebit-ciq
+npm install @ninebit/ciq
 ```
 
 ## 🔧 Usage (Node.js)
 
 ```ts
-import { CIQClient } from 'ninebit-ciq';
+import { CIQClient } from '@ninebit/ciq';
 
 const client = new CIQClient({
   apiKey: 'YOUR_API_KEY',

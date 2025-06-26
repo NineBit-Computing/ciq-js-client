@@ -1,4 +1,4 @@
-# Developer Guide — ninebit-ciq-node Client
+# Developer Guide — @ninebit/ciq Client
 
 This document provides handy commands and tips for developers working on the Node.js TypeScript client.
 
@@ -69,6 +69,12 @@ To manually run all pre-commit checks (without committing):
 
 ```
 npm run lint && npm run format && npm run type-check && npm run check-coverage
+```
+
+## Publish
+
+```
+npm publish --access public
 ```
 
 ## 📁 Useful Configuration Files
