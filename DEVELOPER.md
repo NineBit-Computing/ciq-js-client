@@ -74,6 +74,7 @@ npm run lint && npm run format && npm run type-check && npm run check-coverage
 ## Publish
 
 ```
+npm run build
 npm publish --access public
 ```
 
