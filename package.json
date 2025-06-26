@@ -1,0 +1,70 @@
+{
+  "name": "@ninebit/ciq",
+  "version": "1.0.0",
+  "description": "JavaScript SDK for NineBit CIQ",
+  "main": "dist/index.js",
+  "directories": {
+    "example": "examples",
+    "test": "tests"
+  },
+  "files": [
+    "dist"
+  ],
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prepare": "husky install",
+    "start": "ts-node examples/usage.ts",
+    "lint": "eslint . --config eslint.config.mjs --ext .ts --fix",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write .",
+    "type-check": "tsc --noEmit",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "check-coverage": "jest --coverage --coverageThreshold='{ \"global\": { \"branches\": 30, \"functions\": 30, \"lines\": 30, \"statements\": 30 } }'",
+    "precommit-check": "npm run lint && npm run format && npm run type-check && npm run check-coverage",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NineBit-Computing/ciq-js-client.git"
+  },
+  "keywords": [
+    "NineBit",
+    "CIQ",
+    "JavaScript",
+    "Client"
+  ],
+  "author": "NineBit Computing Pvt Ltd",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NineBit-Computing/ciq-js-client/issues"
+  },
+  "homepage": "https://github.com/NineBit-Computing/ciq-js-client#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "axios": "^1.6.7",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.35.0",
+    "@typescript-eslint/parser": "^8.35.0",
+    "eslint": "^9.29.0",
+    "husky": "^9.1.7",
+    "jest": "^30.0.3",
+    "lint-staged": "^16.1.2",
+    "prettier": "^3.6.1",
+    "ts-jest": "^29.4.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  }
+}

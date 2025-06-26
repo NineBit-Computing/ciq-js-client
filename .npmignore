@@ -1,0 +1,30 @@
+# Ignore source code
+src/
+tests/
+
+# Ignore configuration files
+tsconfig.json
+.eslintrc.json
+.prettierrc
+jest.config.js
+.npmrc
+.husky/
+.lintstagedrc
+README_DEV.md
+
+# Ignore test artifacts
+coverage/
+*.log
+*.test.ts
+*.spec.ts
+
+# Ignore version control & editor files
+.git/
+.vscode/
+.idea/
+
+# Node modules & lock files
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
