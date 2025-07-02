@@ -1,6 +1,6 @@
 {
   "name": "@ninebit/ciq",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "JavaScript SDK for NineBit CIQ",
   "main": "dist/index.js",
   "directories": {
@@ -48,7 +48,8 @@
   },
   "dependencies": {
     "axios": "^1.6.7",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "mime-types": "^3.0.1"
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",

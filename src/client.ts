@@ -1,4 +1,8 @@
 import axios, { AxiosInstance } from 'axios';
+import mime from 'mime-types';
+import path from 'path';
+import fs from 'fs';
+import {formatError} from './utils';
 
 export class CIQClient {
   private apiKey: string;
@@ -22,26 +26,14 @@ export class CIQClient {
   }
 
   /**
-   * Get the design-time workflow structure
-   */
-  async getDesignTimeWorkflow(): Promise<any> {
-    try {
-      const response = await this.http.get('/workflow/design');
-      return response.data;
-    } catch (error) {
-      this.handleError(error, 'getDesignTimeWorkflow');
-    }
-  }
-
-  /**
    * Trigger a new workflow execution
    */
-  async runWorkflow(payload: any): Promise<string> {
+  async triggerWorkflow(payload: any): Promise<string> {
     try {
-      const response = await this.http.post('/workflow/run', payload);
-      return response.data.wf_id;
+      const response = await this.http.post('/workflow-service/trigger_workflow', payload);
+      return response.data.content;
     } catch (error) {
-      this.handleError(error, 'runWorkflow');
+      this.handleError(error, 'triggerWorkflow');
     }
   }
 
@@ -50,7 +42,7 @@ export class CIQClient {
    */
   async getWorkflowStatus(wfId: string): Promise<any> {
     try {
-      const response = await this.http.get(`/workflow/status/${wfId}`);
+      const response = await this.http.get(`/workflow-service/rt/workflows/${wfId}`);
       return response.data;
     } catch (error) {
       this.handleError(error, 'getWorkflowStatus');
@@ -78,11 +70,11 @@ export class CIQClient {
       const poll = async () => {
         try {
           const status = await this.getWorkflowStatus(wfId);
-          const currentState = status?.status;
+          const currentState = status?.content?.status;
 
           if (currentState === 'COMPLETED' || currentState === 'FAILED') {
-            if (onComplete) onComplete(status);
-            return resolve(status);
+            if (onComplete) onComplete(status.result);
+            return resolve(status.result);
           } else {
             setTimeout(poll, intervalMs);
           }
@@ -98,23 +90,26 @@ export class CIQClient {
     });
   }
 
-  async uploadFileToMinio(
-    file: File | Blob,
-    bucketName: string,
-    objectName: string,
-    contentType?: string
-  ): Promise<boolean> {
+  async ingestFile(
+    file: string | Blob,
+    associatedFileName?: string,
+    callback?: (result: any) => void,
+  ){
     try {
-      // Infer content type if not provided
-      if (!contentType && file instanceof File) {
-        contentType = file.type || "application/octet-stream";
+      let filename: string;
+
+      if (typeof file === 'string') {
+        filename = file;
       } else {
-        contentType = contentType || "application/octet-stream";
+        filename = associatedFileName || 'unknown';
       }
 
+      const objectName = path.basename(filename);
+
+      const contentType = mime.lookup(filename) || 'application/octet-stream';
+
       // Step 1: Request pre-signed URL from backend
-      const presignedResponse = await this.http.post("/generate-upload-url", {
-        bucket_name: bucketName,
+      const presignedResponse = await this.http.post("/workflow-service/generate-presigned-url", {
         object_name: objectName,
         content_type: contentType,
       });
@@ -122,24 +117,78 @@ export class CIQClient {
       const presignedUrl: string = presignedResponse.data.url;
 
       // Step 2: Upload file to MinIO using PUT
-      const uploadResponse = await axios.put(presignedUrl, file, {
+      let data: Buffer;
+      if (typeof file === 'string') {
+        // Read file from disk
+        data = fs.readFileSync(file);
+      } else {
+        // Assume file is a Readable or Blob-like object in memory
+        if (file.seek) file.seek(0); // optional; only if custom object supports it
+        data = await file.arrayBuffer ? Buffer.from(await file.arrayBuffer()) : Buffer.from(await file.read());
+      }
+
+      const uploadResponse = await axios.put(presignedUrl, data, {
         headers: {
           "Content-Type": contentType,
         },
+        httpsAgent: new (require('https').Agent)({ rejectUnauthorized: false }), // only if needed
       });
 
       if (uploadResponse.status === 200) {
         console.info("✅ File uploaded successfully.");
-        return true;
+        // return true;
       } else {
         console.error(
-          `❌ Upload failed: ${uploadResponse.status} - ${uploadResponse.statusText}`
+          `Upload failed: ${uploadResponse.status} - ${uploadResponse.statusText}`
         );
         return false;
       }
+
+      // Step 3: Trigger workflow
+      const workspace = this.http.defaults.headers.common['X-API-Key'];
+      const payload = {"workflow": "rag-consumer", "file_path": objectName, "workspace": workspace}
+      const wfId = await this.triggerWorkflow(payload)
+      await this.waitForCompletion(wfId)
+      if (callback) callback({
+        "run_id": wfId,
+        "workspace": workspace
+      })
     } catch (error) {
-      console.error("❌ Upload error:", error);
-      return false;
+      console.error(`Error: triggerWorkflow: ${formatError(error)}}`)
+      throw new Error("Error: triggerWorkflow")
+    }
+  }
+
+  async ragQuery(
+    query: string,
+    euclideanThreshold: number = 0.9,
+    topK: number = 6,
+    callback?: (err: string, result?: any) => void,
+  ): Promise<void> {
+    const workspace = this.http.defaults.headers.common['X-API-Key'];
+    const payload = {
+      "workflow": "rag-query",
+      "rag_query": query,
+      "workspace": workspace,
+      "euclidean_threshold": euclideanThreshold,
+      "top_k": topK,
+    }
+    try {
+      const wfId = await this.triggerWorkflow(payload)
+      const response = await this.waitForCompletion(wfId)
+      console.log("Success: ragQuery")
+      if (callback) {
+        callback('', response)
+      } else {
+        return response;
+      }
+    } catch (ex) {
+      console.error(`Error: ragQuery: ${formatError(ex)}}`)
+      if (callback) {
+        callback(formatError(ex))
+      } else {
+        throw new Error("Error: ragQuery")
+      }
     }
   }
 
