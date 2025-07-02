@@ -1,8 +1,8 @@
 {
   "name": "@ninebit/ciq",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "JavaScript SDK for NineBit CIQ",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "directories": {
     "example": "examples",
     "test": "tests"
@@ -10,7 +10,6 @@
   "files": [
     "dist"
   ],
-  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "prepare": "husky install",

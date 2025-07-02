@@ -14,14 +14,20 @@
 
 ## 🚀 Features
 
-- Simple SDK to interact with CIQ’s API via REST
-- Designed for enterprise-grade data workflows
-- Supports:
-  - Fetching design-time workflow
-  - Triggering workflows
-  - Polling workflow status (with async wait support)
-- Built with TypeScript
-- Includes CLI & fully tested with Jest
+- Retrieval-Augmented Generation (RAG)
+  Perform semantic search and intelligent query answering using hybrid retrieval techniques.
+- Flexible Query Interface
+  Send queries with configurable similarity thresholds and top_k result tuning.
+- Callback Support for Asynchronous Workflows
+  Pass in callbacks to handle results or errors once workflows complete — ideal for event-driven applications.
+- Workflow Polling with Timeout Control
+  Monitor long-running workflows with built-in polling, status checking, and customizable timeouts.
+- Simple, Extensible API
+  Clean, Pythonic interfaces with support for both synchronous returns and optional callbacks.
+- Error-Handled Execution Flow
+  Graceful handling of task failures, timeouts, and unexpected states with descriptive exceptions.
+- Logging Support
+  Integrated logging for easy debugging and transparency during polling or querying.
 
 ---
 
@@ -34,30 +40,29 @@ npm install @ninebit/ciq
 ## 🔧 Usage (Node.js)
 
 ```ts
+//  Use import for ESM
 import { CIQClient } from '@ninebit/ciq';
 
-const client = new CIQClient({
-  apiKey: 'YOUR_API_KEY',
-});
+//  Use require() for CommonJS
+const { CIQClient } = require('@ninebit/ciq');
 
-(async () => {
-  const design = await client.getDesignTimeWorkflow();
-  console.log('Workflow design:', design);
+const apiKey = process.env.API_KEY || '';
+const client = new CIQClient(apiKey);
 
-  const wfId = await client.runWorkflow({ input: 'your data here' });
+async function runExample() {
+  try {
+    await client.ingestFile("files/eco101.pdf");
+    const query = "Your Query String?"
+    const response = await client.ragQuery(query)
+    console.log("Query response is ", response);
+  } catch (error) {
+    console.error('Error in CIQ:', error);
+  }
+}
 
-  const status = await client.getWorkflowStatus(wfId);
-  console.log('Current status:', status);
-})();
+runExample();
 ```
 
-## 🔁 Usage with Callback (Async Wait)
-
-```ts
-await client.waitForCompletion(wfId, 1000, (status) => {
-  console.log('Status changed:', status.status);
-});
-```
 
 ## 🧪 Running Tests
 
@@ -72,12 +77,10 @@ If you're contributing to this SDK, see DEVELOPER.md for full setup, linting, fo
 
 ## 📄 API Reference
 
-| Method                                          | Description                       |
-| ----------------------------------------------- | --------------------------------- |
-| `getDesignTimeWorkflow()`                       | Fetch workflow design (JSON)      |
-| `runWorkflow(input)`                            | Trigger workflow, returns `wf_id` |
-| `getWorkflowStatus(wf_id)`                      | Check current status or result    |
-| `waitForCompletion(wf_id, interval, onUpdate?)` | Poll until completion             |
+| Method                                        | Description                       |
+| --------------------------------------------- | --------------------------------- |
+| `ingestFile(file_path)`                       | Reads and uploads a PDF or DOCX file to the backend for processing.      |
+| `ragQuery(query_string)`                      | Performs a Retrieval-Augmented Generation (RAG) query using the provided input. |
 
 ## ⚙️ Configuration
 
@@ -85,6 +88,14 @@ If you're contributing to this SDK, see DEVELOPER.md for full setup, linting, fo
 | --------- | ------ | -------- | ----------------------------------- |
 | `apiKey`  | string | ✅       | Your CIQ API Key                    |
 | `baseUrl` | string | ❌       | Optional (default: CIQ backend URL) |
+
+
+---
+
+## You’ll Need an API Key
+If you’re using the Freemium CIQ setup, you’ll just need to register at our web app and grab your API key. It’s quick, and no credit card is required.
+
+You can sign up here [NineBit CIQ](https://ciq.ninebit.in)
 
 ## 📄 License
 
