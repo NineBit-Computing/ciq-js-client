@@ -1,8 +1,15 @@
 import axios, { AxiosInstance } from 'axios';
+import https from 'https';
 import mime from 'mime-types';
 import path from 'path';
 import fs from 'fs';
 import {formatError} from './utils';
+
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
+const httpsAgent = new https.Agent({
+  rejectUnauthorized: false
+});
 
 export class CIQClient {
   private apiKey: string;
@@ -64,7 +71,7 @@ export class CIQClient {
   async waitForCompletion(
     wfId: string,
     intervalMs: number = 2000,
-    onComplete?: (result: any) => void,
+    onComplete?: (err: string, result?: any) => void,
   ): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const poll = async () => {
@@ -72,9 +79,12 @@ export class CIQClient {
           const status = await this.getWorkflowStatus(wfId);
           const currentState = status?.content?.status;
 
-          if (currentState === 'COMPLETED' || currentState === 'FAILED') {
-            if (onComplete) onComplete(status.result);
+          if (currentState === 'success') {
+            if (onComplete) onComplete("", status.result);
             return resolve(status.result);
+          } else if (currentState === 'FAILED' || currentState === 'error') {
+            if (onComplete) onComplete("Wofkflow failed");
+            return reject("Wofkflow failed")
           } else {
             setTimeout(poll, intervalMs);
           }
@@ -91,7 +101,7 @@ export class CIQClient {
   }
 
   async ingestFile(
-    file: string | Blob,
+    file: string,
     associatedFileName?: string,
     callback?: (result: any) => void,
   ){
@@ -118,20 +128,18 @@ export class CIQClient {
 
       // Step 2: Upload file to MinIO using PUT
       let data: Buffer;
-      if (typeof file === 'string') {
-        // Read file from disk
+      // if (typeof file === 'string') {
         data = fs.readFileSync(file);
-      } else {
-        // Assume file is a Readable or Blob-like object in memory
-        if (file.seek) file.seek(0); // optional; only if custom object supports it
-        data = await file.arrayBuffer ? Buffer.from(await file.arrayBuffer()) : Buffer.from(await file.read());
-      }
+      // } else {
+      //   if (file.seek) file.seek(0); // optional; only if custom object supports it
+      //   data = await file.arrayBuffer ? Buffer.from(await file.arrayBuffer()) : Buffer.from(await file.read());
+      // }
 
       const uploadResponse = await axios.put(presignedUrl, data, {
         headers: {
           "Content-Type": contentType,
         },
-        httpsAgent: new (require('https').Agent)({ rejectUnauthorized: false }), // only if needed
+        // httpsAgent: httpsAgent
       });
 
       if (uploadResponse.status === 200) {
@@ -145,7 +153,7 @@ export class CIQClient {
       }
 
       // Step 3: Trigger workflow
-      const workspace = this.http.defaults.headers.common['X-API-Key'];
+      const workspace = this.http.defaults.headers['X-API-Key'];
       const payload = {"workflow": "rag-consumer", "file_path": objectName, "workspace": workspace}
       const wfId = await this.triggerWorkflow(payload)
       await this.waitForCompletion(wfId)
@@ -165,7 +173,7 @@ export class CIQClient {
     topK: number = 6,
     callback?: (err: string, result?: any) => void,
   ): Promise<void> {
-    const workspace = this.http.defaults.headers.common['X-API-Key'];
+    const workspace = this.http.defaults.headers['X-API-Key'];
     const payload = {
       "workflow": "rag-query",
       "rag_query": query,

@@ -1,32 +1,25 @@
 import { config } from 'dotenv';
-import { CIQClient } from '../src';
+import { CIQClient } from '../src/client';
 
 config(); // Loads API key from .env if available
+let client: CIQClient;
+try {
+  const apiKey = process.env.API_KEY || 'd688c3b0-2d91-489e-873e-87d2f43e7cf1';
+  client = new CIQClient(apiKey);
+  console.log("CIQClient initialised success");
+} catch (ex) {
+  console.error("Could not initialise CIQClient");
+}
 
-const apiKey = process.env.CIQ_API_KEY || '';
-const client = new CIQClient(apiKey);
 
 async function runExample() {
   try {
-    // 1. Get design-time workflow
-    const design = await client.getDesignTimeWorkflow();
-    console.log('Design-time workflow:', design);
-
-    // 2. Trigger workflow
-    const wfId = await client.runWorkflow({ input: 'example' });
-    console.log('Triggered workflow ID:', wfId);
-
-    // 3A. Option 1: Wait until completed (blocking)
-    console.log('Waiting for workflow to complete...');
-    const finalStatus = await client.waitForCompletion(wfId);
-    console.log('Final status (sync):', finalStatus);
-
-    // 3B. Option 2: Background polling with callback
-    // client.waitForCompletion(wfId, 3000, (result) => {
-    //   console.log("Final status (callback):", result);
-    // });
+    await client.ingestFile("examples/files/eco101.pdf");
+    const query = "When was India’s first official census operation undertaken?"
+    const response = await client.ragQuery(query)
+    console.log("Query response is ", response);
   } catch (error) {
-    console.error('Error in CIQ client usage:', error);
+    console.error('Error in CIQ example:', error);
   }
 }
 
