@@ -4,6 +4,7 @@ import { CIQClient } from '../src/client';
 config(); // Loads API key from .env if available
 let client: CIQClient;
 try {
+  console.log("API_KEY exists:", Boolean(process.env.API_KEY));
   const apiKey = process.env.API_KEY || '';
   client = new CIQClient(apiKey);
   console.log('CIQClient initialised success');

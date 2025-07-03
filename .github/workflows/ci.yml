@@ -30,9 +30,9 @@ jobs:
         run: npm run build
 
       - name: 🧪 Run integration tests
-        env:
-          BACKEND_API_KEY: ${{ secrets.API_KEY }}
         run: npm run test:ci
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
 
       # Optional: Uncomment if you use coverage reports in future
       # - name: ☂️ Upload Coverage to Codecov
