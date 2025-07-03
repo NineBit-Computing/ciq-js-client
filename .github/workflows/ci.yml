@@ -29,7 +29,9 @@ jobs:
       - name: 📦 Build SDK
         run: npm run build
 
-      - name: 🧪 Run CI
+      - name: 🧪 Run integration tests
+        env:
+          BACKEND_API_KEY: ${{ secrets.API_KEY }}
         run: npm run test:ci
 
       # Optional: Uncomment if you use coverage reports in future
