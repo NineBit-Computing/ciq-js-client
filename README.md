@@ -1,3 +1,5 @@
+# Node TypeScript SDK for RAG (Retrieval Augmented Generation)
+
 ![](banner.png)
 ![npm](https://img.shields.io/npm/v/@ninebit/ciq)
 ![downloads](https://img.shields.io/npm/dm/@ninebit/ciq)
@@ -6,11 +8,9 @@
 ![typescript](https://img.shields.io/badge/types-TypeScript-blue)
 ![prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)
 
-# 🔗 @ninebit/ciq
+## 🔗 @ninebit/ciq
 
-**Official Node.js SDK for interacting with [NineBit CIQ](https://ciq.ninebit.in)** — a secure, enterprise-grade orchestration platform for AI/ML workflows and rapid prototyping with your data.
-
----
+**Official Node.js SDK for interacting with [NineBit CIQ](https://ciq.ninebit.in?utm_source=npm)** — a Retrieval-Augmented Generation (RAG) workflow orchestration platform for secure, private, rapid prototyping of AI/ML ideas using enterprise data and open-source models.
 
 ## 🚀 Features
 
@@ -29,15 +29,13 @@
 - Logging Support
   Integrated logging for easy debugging and transparency during polling or querying.
 
----
-
 ## 📦 Installation
 
 ```bash
 npm install @ninebit/ciq
 ```
 
-## 🔧 Usage (Node.js)
+## 🔧 Quickstart (Node.js)
 
 ```ts
 //  Use import for ESM
@@ -51,10 +49,10 @@ const client = new CIQClient(apiKey);
 
 async function runExample() {
   try {
-    await client.ingestFile("files/eco101.pdf");
-    const query = "Your Query String?"
-    const response = await client.ragQuery(query)
-    console.log("Query response is ", response);
+    await client.ingestFile('files/eco101.pdf');
+    const query = 'Your Query String?';
+    const response = await client.ragQuery(query);
+    console.log('Query response is ', response);
   } catch (error) {
     console.error('Error in CIQ:', error);
   }
@@ -63,6 +61,11 @@ async function runExample() {
 runExample();
 ```
 
+## 🔐 Authentication - You’ll Need an API Key
+
+If you’re using the Freemium CIQ setup, you’ll just need to register at our web app and grab your API key. It’s quick, and no credit card is required.
+
+You can sign up here [NineBit CIQ](https://ciq.ninebit.in?utm_source=npm)
 
 ## 🧪 Running Tests
 
@@ -77,10 +80,10 @@ If you're contributing to this SDK, see DEVELOPER.md for full setup, linting, fo
 
 ## 📄 API Reference
 
-| Method                                        | Description                       |
-| --------------------------------------------- | --------------------------------- |
-| `ingestFile(file_path)`                       | Reads and uploads a PDF or DOCX file to the backend for processing.      |
-| `ragQuery(query_string)`                      | Performs a Retrieval-Augmented Generation (RAG) query using the provided input. |
+| Method                   | Description                                                                     |
+| ------------------------ | ------------------------------------------------------------------------------- |
+| `ingestFile(file_path)`  | Reads and uploads a PDF or DOCX file to the backend for processing.             |
+| `ragQuery(query_string)` | Performs a Retrieval-Augmented Generation (RAG) query using the provided input. |
 
 ## ⚙️ Configuration
 
@@ -88,14 +91,6 @@ If you're contributing to this SDK, see DEVELOPER.md for full setup, linting, fo
 | --------- | ------ | -------- | ----------------------------------- |
 | `apiKey`  | string | ✅       | Your CIQ API Key                    |
 | `baseUrl` | string | ❌       | Optional (default: CIQ backend URL) |
-
-
----
-
-## You’ll Need an API Key
-If you’re using the Freemium CIQ setup, you’ll just need to register at our web app and grab your API key. It’s quick, and no credit card is required.
-
-You can sign up here [NineBit CIQ](https://ciq.ninebit.in)
 
 ## 📄 License
 
@@ -111,6 +106,6 @@ Pull requests are welcome! Please check DEVELOPER.md and ensure:
 
 ## 📬 Questions?
 
-Email us at support@ninebit.in or visit ciq.ninebit.in
+Email us at support@ninebit.in or visit [NineBit Computing](https://ninebit.in?utm_source=npm)
 
 © NineBit Computing, 2025
