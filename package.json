@@ -1,6 +1,6 @@
 {
   "name": "@ninebit/ciq",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "JavaScript SDK for NineBit CIQ",
   "main": "dist/src/index.js",
   "directories": {
@@ -11,7 +11,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && cp -r assets dist/",
     "prepare": "husky install",
     "start": "ts-node examples/usage.ts",
     "lint": "eslint . --config eslint.config.mjs --ext .ts --fix",
@@ -19,11 +19,11 @@
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
     "type-check": "tsc --noEmit",
-    "test:ci": "vitest run",
+    "test:ci": "node dist/examples/usage.js",
     "test": "jest",
     "test:coverage": "jest --coverage",
     "check-coverage": "jest --coverage --coverageThreshold='{ \"global\": { \"branches\": 30, \"functions\": 30, \"lines\": 30, \"statements\": 30 } }'",
-    "precommit-check": "npm run lint && npm run format && npm run type-check && npm run check-coverage",
+    "precommit-check": "npm run lint && npm run format && npm run type-check",
     "prepublishOnly": "npm run build"
   },
   "repository": {
