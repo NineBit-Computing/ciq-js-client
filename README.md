@@ -1,12 +1,13 @@
 # Node TypeScript SDK for RAG (Retrieval Augmented Generation)
 
 ![](banner.png)
-![npm](https://img.shields.io/npm/v/@ninebit/ciq)
-![downloads](https://img.shields.io/npm/dm/@ninebit/ciq)
-![build](https://img.shields.io/github/actions/workflow/status/NineBit-Computing/ciq-js-client/ci.yml?branch=main)
-![license](https://img.shields.io/npm/l/@ninebit/ciq)
+[![npm](https://img.shields.io/npm/v/@ninebit/ciq)](https://www.npmjs.com/package/@ninebit/ciq)
+[![downloads](https://img.shields.io/npm/dm/@ninebit/ciq)](https://www.npmjs.com/package/@ninebit/ciq)
+[![build](https://img.shields.io/github/actions/workflow/status/NineBit-Computing/ciq-js-client/ci.yml?branch=main)](https://github.com/NineBit-Computing/ciq-js-client/actions)
+[![license](https://img.shields.io/npm/l/@ninebit/ciq)](https://github.com/NineBit-Computing/ciq-js-client/blob/main/LICENSE)
 ![typescript](https://img.shields.io/badge/types-TypeScript-blue)
 ![prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)
+![husky](https://img.shields.io/badge/husky-enabled-brightgreen?logo=git&logoColor=white)
 
 ## 🔗 @ninebit/ciq
 
