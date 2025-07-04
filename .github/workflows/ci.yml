@@ -1,10 +1,13 @@
-name: CIQ JS Client CI
+name: CIQ Node SDK Integration Tests
 
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch: # Optional, allows manual triggering
+  schedule:
+    - cron: '0 * * * *' # Run every hour
 
 jobs:
   build-and-test:
