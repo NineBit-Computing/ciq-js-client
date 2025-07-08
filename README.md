@@ -13,6 +13,10 @@
 
 **Official Node.js SDK for interacting with [NineBit CIQ](https://ciq.ninebit.in?utm_source=npm)** — a Retrieval-Augmented Generation (RAG) workflow orchestration platform for secure, private, rapid prototyping of AI/ML ideas using enterprise data and open-source models.
 
+Join the community:
+
+[![Join us on Slack](https://img.shields.io/badge/Slack-join%20chat-4A154B?style=for-the-badge&logo=slack&logoColor=white)](https://join.slack.com/t/ninebit-ciq-community/shared_invite/zt-38oi663on-9R~0J8echKGQ8NV2zRKJZA)
+
 ## 🚀 Features
 
 - Retrieval-Augmented Generation (RAG)
