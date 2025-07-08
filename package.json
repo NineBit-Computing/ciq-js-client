@@ -1,6 +1,6 @@
 {
   "name": "@ninebit/ciq",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "JavaScript SDK for NineBit CIQ",
   "main": "dist/src/index.js",
   "directories": {
