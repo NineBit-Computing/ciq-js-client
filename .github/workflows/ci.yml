@@ -7,7 +7,7 @@ on:
     branches: [main]
   workflow_dispatch: # Optional, allows manual triggering
   schedule:
-    - cron: "0 */4 * * *" # At minute 0 past every 4th hour
+    - cron: '0 */4 * * *' # At minute 0 past every 4th hour
 
 jobs:
   build-and-test:
