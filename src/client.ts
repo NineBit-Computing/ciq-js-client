@@ -114,8 +114,8 @@ export class CIQClient {
   async ingestFile(
     file: string,
     associatedFileName?: string,
-    callback?: (result: any) => void,
-  ) {
+    callback?: (err: string, result: any) => void,
+  ) : Promise<any> {
     try {
       let filename: string;
 
@@ -157,15 +157,29 @@ export class CIQClient {
 
       if (uploadResponse.status === 200) {
         console.info('Success: ingestFile');
-        // return true;
+        if (callback) callback('', { objectName });
+        return { objectName };
       } else {
         console.error(
           `Error: ingestFile: ${uploadResponse.status} - ${uploadResponse.statusText}`,
         );
         return false;
       }
+    } catch (error) {
+      console.error(`Error: ingestFile: ${formatError(error)}}`);
+      throw new Error('Error: ingestFile');
+    }
+  }
 
-      // Step 3: Trigger workflow
+  async ragConsumeFile(
+    file: string,
+    associatedFileName?: string,
+    callback?: (err: string, result: any) => void,
+  ): Promise<void> {
+    try {
+      const { objectName } = await this.ingestFile(file, associatedFileName, callback);
+
+      // Step 1: Trigger workflow
       const workspace = this.http.defaults.headers['X-API-Key'];
       const payload = {
         workflow: 'rag-consumer',
@@ -175,7 +189,7 @@ export class CIQClient {
       const wfId = await this.triggerWorkflow(payload);
       await this.waitForCompletion(wfId);
       if (callback)
-        callback({
+        callback('', {
           run_id: wfId,
           workspace: workspace,
         });
@@ -215,6 +229,34 @@ export class CIQClient {
       } else {
         throw new Error('Error: ragQuery');
       }
+    }
+  }
+
+  async processInvoice(
+    file: string,
+    associatedFileName?: string,
+    callback?: (err: string, result: any) => void,
+  ): Promise<void> {
+    try {
+      const { objectName } = await this.ingestFile(file, associatedFileName, callback);
+
+      // Step 1: Trigger workflow
+      const workspace = this.http.defaults.headers['X-API-Key'];
+      const payload = {
+        "workflow": "invoice-processor",
+        "file_path": objectName
+      };
+
+      const wfId = await this.triggerWorkflow(payload);
+      const response = await this.waitForCompletion(wfId);
+      if (callback) {
+        callback('', response);
+      } else {
+        return response;
+      }
+    } catch (error) {
+      console.error(`Error: triggerWorkflow: ${formatError(error)}}`);
+      throw new Error('Error: triggerWorkflow');
     }
   }
 }

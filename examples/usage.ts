@@ -13,9 +13,9 @@ try {
   process.exit(1);
 }
 
-async function runExample() {
+async function runRAGExample() {
   try {
-    await client.ingestFile('assets/eco101.pdf');
+    await client.ragConsumeFile('assets/eco101.pdf');
     const query =
       'When was India’s first official census operation undertaken?';
     const response = await client.ragQuery(query);
@@ -26,4 +26,15 @@ async function runExample() {
   }
 }
 
-runExample();
+async function runInvoiceProcessingExample() {
+  try {
+    const response = await client.processInvoice('assets/SupplyTechInvoice.pdf');
+    console.log('Invoice processing response is ', response);
+  } catch (error) {
+    console.error('Error in CIQ example:', error);
+    process.exit(1);
+  }
+}
+
+runRAGExample();
+runInvoiceProcessingExample();
