@@ -28,9 +28,7 @@ async function runRAGExample() {
 
 async function runInvoiceProcessingExample() {
   try {
-    const response = await client.processInvoice(
-      'assets/SupplyTechInvoice.pdf',
-    );
+    const response = await client.processInvoice('assets/SupplyTech_1.pdf');
     console.log('Invoice processing response is ', response);
   } catch (error) {
     console.error('Error in CIQ example:', error);
@@ -38,5 +36,11 @@ async function runInvoiceProcessingExample() {
   }
 }
 
-runRAGExample();
-runInvoiceProcessingExample();
+async function runExamples() {
+  await runRAGExample();
+  console.log('RAG Example run successfully!');
+  await runInvoiceProcessingExample();
+  console.log('Invoice Processing Example run successfully!');
+}
+
+runExamples();
