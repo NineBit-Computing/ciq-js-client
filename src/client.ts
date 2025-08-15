@@ -115,7 +115,7 @@ export class CIQClient {
     file: string,
     associatedFileName?: string,
     callback?: (err: string, result: any) => void,
-  ) : Promise<any> {
+  ): Promise<any> {
     try {
       let filename: string;
 
@@ -177,7 +177,11 @@ export class CIQClient {
     callback?: (err: string, result: any) => void,
   ): Promise<void> {
     try {
-      const { objectName } = await this.ingestFile(file, associatedFileName, callback);
+      const { objectName } = await this.ingestFile(
+        file,
+        associatedFileName,
+        callback,
+      );
 
       // Step 1: Trigger workflow
       const workspace = this.http.defaults.headers['X-API-Key'];
@@ -238,13 +242,16 @@ export class CIQClient {
     callback?: (err: string, result: any) => void,
   ): Promise<void> {
     try {
-      const { objectName } = await this.ingestFile(file, associatedFileName, callback);
+      const { objectName } = await this.ingestFile(
+        file,
+        associatedFileName,
+        callback,
+      );
 
       // Step 1: Trigger workflow
-      const workspace = this.http.defaults.headers['X-API-Key'];
       const payload = {
-        "workflow": "invoice-processor",
-        "file_path": objectName
+        workflow: 'invoice-processor',
+        file_path: objectName,
       };
 
       const wfId = await this.triggerWorkflow(payload);
