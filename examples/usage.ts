@@ -39,8 +39,8 @@ async function runInvoiceProcessingExample() {
 async function runExamples() {
   await runRAGExample();
   console.log('RAG Example run successfully!');
-  await runInvoiceProcessingExample();
-  console.log('Invoice Processing Example run successfully!');
+  // await runInvoiceProcessingExample();
+  // console.log('Invoice Processing Example run successfully!');
 }
 
 runExamples();
